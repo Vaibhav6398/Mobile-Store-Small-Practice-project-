@@ -1,0 +1,6 @@
+POST
+content-type: application/json
+
+{
+    "userid":112
+}
