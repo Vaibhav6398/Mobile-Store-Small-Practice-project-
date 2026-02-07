@@ -8,7 +8,27 @@ export default function SignupForm({ switchToLogin }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
-  const [passwordError, setPasswordError] = useState();
+  const [passwordError, setPasswordError] = useState("");
+
+  const validatePassword = (value) => {
+    const regex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    if (!value) {
+      setPasswordError("Password is required");
+      return false;
+    }
+
+    if (!regex.test(value)) {
+      setPasswordError(
+        "Min 8 chars, 1 uppercase, 1 lowercase, 1 number & 1 special character"
+      );
+      return false;
+    }
+
+    setPasswordError("");
+    return true;
+  };
 
   const handleSignup = async () => {
     if (!userName || !userId || !password) {
@@ -30,61 +50,49 @@ export default function SignupForm({ switchToLogin }) {
         gender,
       });
 
-      alert("Account created successfully");
+      alert("Account created successfully 🎉");
       switchToLogin();
     } catch (error) {
-      alert(error.response?.data?.message || "Signup failed");
+      alert(error.response?.data?.message || "Signup failed ❌");
     }
   };
-  const validatePassword = (value) => {
-    const regex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-    if (!value) {
-      setPasswordError("Password is required");
-      return false;
-    }
-
-    if (!regex.test(value)) {
-      setPasswordError(
-        "Min 8 chars, 1 uppercase, 1 lowercase, 1 number & 1 special character"
-      );
-      return false;
-    }
-
-    setPasswordError("");
-    return true;
-  };
-
-
 
   return (
     <>
-      <h2 className="text-3xl font-bold mb-6">Sign Up</h2>
+      {/* TITLE */}
+      <h2 className="text-3xl font-extrabold text-gray-800 mb-1">
+        Create Account
+      </h2>
+      <p className="text-gray-500 mb-6">
+        Join us and get started in minutes
+      </p>
 
+      {/* NAME */}
       <input
-        placeholder="User Name"
-        className="w-full mb-3 px-4 py-2 border rounded-lg"
+        placeholder="Full Name"
+        className="w-full mb-4 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none"
         onChange={(e) => setUserName(e.target.value)}
       />
 
+      {/* USER ID */}
       <input
         placeholder="User ID"
         type="number"
-        className="w-full mb-3 px-4 py-2 border rounded-lg"
+        className="w-full mb-4 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none"
         onChange={(e) => setUserId(e.target.value)}
       />
 
-      <div className="flex gap-3 mb-3">
+      {/* AGE + GENDER */}
+      <div className="flex gap-3 mb-4">
         <input
           type="number"
           placeholder="Age"
-          className="w-1/2 px-3 py-2 border rounded-md text-sm"
+          className="w-1/2 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none"
           onChange={(e) => setAge(e.target.value)}
         />
 
         <select
-          className="w-1/2 px-3 py-2 border rounded-md text-sm"
+          className="w-1/2 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none"
           defaultValue=""
           onChange={(e) => setGender(e.target.value)}
         >
@@ -97,59 +105,60 @@ export default function SignupForm({ switchToLogin }) {
         </select>
       </div>
 
-      <div className="mb-6">
-  <label className="block text-sm font-medium text-gray-700 mb-1">
-    Password
-  </label>
+      {/* PASSWORD */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Password
+        </label>
 
-  <input
-    type="password"
-    value={password}
-    onChange={(e) => {
-      const value = e.target.value;
-      setPassword(value);
-      validatePassword(value);
-    }}
-    className={`w-full px-4 py-3 rounded-lg border text-sm focus:outline-none focus:ring-2 ${
-      passwordError
-        ? "border-red-500 focus:ring-red-400"
-        : "border-gray-300 focus:ring-green-500"
-    }`}
-    placeholder="Enter password"
-  />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => {
+            const value = e.target.value;
+            setPassword(value);
+            validatePassword(value);
+          }}
+          className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 ${
+            passwordError
+              ? "border-red-500 focus:ring-red-400"
+              : "border-gray-300 focus:ring-yellow-400"
+          }`}
+          placeholder="Create strong password"
+        />
 
-  {passwordError && (
-    <p className="mt-1 text-xs text-red-500">
-      {passwordError}
-    </p>
-  )}
-</div>
+        {passwordError && (
+          <p className="mt-1 text-xs text-red-500">{passwordError}</p>
+        )}
+      </div>
 
-
-
+      {/* CONFIRM PASSWORD */}
       <input
         placeholder="Confirm Password"
         type="password"
-        className="w-full mb-6 px-4 py-2 border rounded-lg"
+        className="w-full mb-6 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none"
         onChange={(e) => setConfirmPassword(e.target.value)}
       />
 
+      {/* ACTION */}
       <button
         onClick={handleSignup}
         disabled={!!passwordError || !password}
-        className={`w-full text-white py-3 rounded-lg transition ${passwordError || !password
+        className={`w-full py-3 rounded-full font-bold transition ${
+          passwordError || !password
             ? "bg-gray-400 cursor-not-allowed"
-            : "bg-green-600 hover:bg-green-700"
-          }`}
+            : "bg-yellow-400 hover:bg-yellow-500 text-black shadow-lg"
+        }`}
       >
         Create Account
       </button>
 
+      {/* SWITCH */}
       <p className="text-center text-sm mt-6">
         Already have an account?{" "}
         <button
           onClick={switchToLogin}
-          className="text-blue-600 font-semibold"
+          className="text-yellow-600 font-semibold hover:underline"
         >
           Login
         </button>

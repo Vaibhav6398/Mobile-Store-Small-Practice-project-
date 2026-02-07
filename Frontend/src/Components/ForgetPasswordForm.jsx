@@ -9,11 +9,9 @@ export default function ForgotPasswordForm({ switchToLogin }) {
   const [message, setMessage] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-
-
   const sendOtp = async () => {
     if (!userId) {
-      setMessage("UserID is required");
+      setMessage("User ID is required");
       return;
     }
 
@@ -23,36 +21,36 @@ export default function ForgotPasswordForm({ switchToLogin }) {
       });
 
       setStep(2);
-      setMessage("OTP sent successfully");
+      setMessage("OTP sent successfully ✅");
     } catch (err) {
       setMessage(err.response?.data?.error || "Failed to send OTP");
     }
   };
 
   const resetPassword = async () => {
-  if (!otp || !newPassword) {
-    setMessage("All fields are required");
-    return;
-  }
+    if (!otp || !newPassword) {
+      setMessage("All fields are required");
+      return;
+    }
 
-  if (passwordError) {
-    setMessage("Please fix password errors");
-    return;
-  }
+    if (passwordError) {
+      setMessage("Please fix password errors");
+      return;
+    }
 
-  try {
-    await axios.post("http://localhost:8080/resetPassword", {
-      userid: parseInt(userId),
-      otp,
-      new_password: newPassword,
-    });
+    try {
+      await axios.post("http://localhost:8080/resetPassword", {
+        userid: parseInt(userId),
+        otp,
+        new_password: newPassword,
+      });
 
-    alert("Password reset successful");
-    switchToLogin();
-  } catch (err) {
-    setMessage(err.response?.data?.error || "Invalid OTP");
-  }
-};
+      alert("Password reset successful 🎉");
+      switchToLogin();
+    } catch (err) {
+      setMessage(err.response?.data?.error || "Invalid OTP");
+    }
+  };
 
   const validatePassword = (value) => {
     const regex =
@@ -76,20 +74,23 @@ export default function ForgotPasswordForm({ switchToLogin }) {
 
   return (
     <>
-      <h2 className="text-3xl font-bold text-gray-800 mb-2">
-        Forgot Password
+      {/* TITLE */}
+      <h2 className="text-3xl font-extrabold text-gray-800 mb-1">
+        Reset Password
       </h2>
 
       <p className="text-gray-500 mb-6">
         {step === 1
-          ? "Enter your UserID to receive OTP"
-          : "Enter OTP and new password"}
+          ? "Enter your User ID to receive OTP"
+          : "Enter OTP and create a new password"}
       </p>
 
+      {/* MESSAGE */}
       {message && (
         <p className="text-red-500 text-sm mb-4">{message}</p>
       )}
 
+      {/* STEP 1 */}
       {step === 1 && (
         <>
           <input
@@ -97,18 +98,19 @@ export default function ForgotPasswordForm({ switchToLogin }) {
             placeholder="User ID"
             value={userId}
             onChange={(e) => setUserId(e.target.value)}
-            className="w-full px-4 py-3 border rounded-lg mb-4"
+            className="w-full mb-4 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none"
           />
 
           <button
             onClick={sendOtp}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg"
+            className="w-full py-3 rounded-full font-bold bg-yellow-400 hover:bg-yellow-500 text-black shadow-lg transition"
           >
             Send OTP
           </button>
         </>
       )}
 
+      {/* STEP 2 */}
       {step === 2 && (
         <>
           <input
@@ -117,7 +119,7 @@ export default function ForgotPasswordForm({ switchToLogin }) {
             value={otp}
             onChange={(e) => setOtp(e.target.value)}
             maxLength={4}
-            className="w-full px-4 py-3 border rounded-lg mb-4"
+            className="w-full mb-4 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none"
           />
 
           <input
@@ -129,30 +131,40 @@ export default function ForgotPasswordForm({ switchToLogin }) {
               setNewPassword(value);
               validatePassword(value);
             }}
-            className={`w-full px-4 py-3 border rounded-lg mb-4 ${
-            passwordError ? "border-red-500 ": "border-gray-300 focus:ring-green-500"}`}
+            className={`w-full mb-2 px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 ${
+              passwordError
+                ? "border-red-500 focus:ring-red-400"
+                : "border-gray-300 focus:ring-yellow-400"
+            }`}
           />
+
           {passwordError && (
-            <p className="mt-1 text-xs text-red-500">{passwordError}</p>
+            <p className="mb-4 text-xs text-red-500">
+              {passwordError}
+            </p>
           )}
+
           <button
             onClick={resetPassword}
-            disabled ={!!passwordError || !newPassword}
-            className={`w-full bg-blue-600 text-white py-3 rounded-lg ${passwordError || !newPassword 
-              ?"bg-gray-400 cursor-not-allowed"
-              :"bg-green-600 hover:bg-green-700"}`}
+            disabled={!!passwordError || !newPassword}
+            className={`w-full py-3 rounded-full font-bold transition ${
+              passwordError || !newPassword
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-green-500 hover:bg-green-600 text-white shadow-lg"
+            }`}
           >
             Reset Password
           </button>
         </>
       )}
 
+      {/* BACK */}
       <p className="text-center text-sm mt-6">
         <button
           onClick={switchToLogin}
-          className="text-blue-600 font-semibold"
+          className="text-yellow-600 font-semibold hover:underline"
         >
-          Back to Login
+          ← Back to Login
         </button>
       </p>
     </>
