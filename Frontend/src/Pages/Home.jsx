@@ -133,7 +133,7 @@ export default function Home() {
             placeholder="Search..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="px-4 py-2 rounded-full text-black outline-none"
+            className="px-4 py-2 rounded-full text-white outline-amber-100 outline-2"
           />
 
           <button
